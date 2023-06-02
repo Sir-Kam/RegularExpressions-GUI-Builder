@@ -25,17 +25,19 @@ body {
     background: #111;
     width: calc(100% - 20px);
     height: auto;
-    border-radius: 10px;
-    border: 2px solid #777a;
+    border-radius: 4px;
+    border: 1px solid #777a;
+    /*
     background-image: linear-gradient(30deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(150deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(30deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(150deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(60deg, var(--bg-linear-grad-color-faded) 25%, transparent 25.5%, transparent 75%, var(--bg-linear-grad-color-faded) 75%, var(--bg-linear-grad-color-faded)), linear-gradient(60deg, var(--bg-linear-grad-color-faded) 25%, transparent 25.5%, transparent 75%, var(--bg-linear-grad-color-faded) 75%, var(--bg-linear-grad-color-faded));
     background-size: 20px 35px;
     background-position: 0px 0px, 0px 0px, 10px 18px, 10px 18px, 0px 0px, 10px 18px;
+    */
 }
 
 #toolbar-area {
     height: auto;
     background: linear-gradient(180deg, #66666669 calc(100% - 2pt), #777a calc(100% - 2pt));
-    border-radius: 8px 8px 0px 0px;
+    border-radius: 2px 2px 0px 0px;
     padding: 5pt;
     display: block;
     /* position: absolute; */
@@ -55,7 +57,7 @@ body {
 #output-area {
     height: calc(100% - 20pt);
     background: #66666669;
-    border-radius: 0px 0px 8px 8px;
+    border-radius: 0px 0px 2px 2px;
     line-height: 26pt;
     padding: 5pt 10pt;
     font-size: 12pt;
@@ -82,15 +84,34 @@ body {
     box-shadow: 0px 0px 0px 1px #d7d1aa40 inset;
     backdrop-filter: blur(4px);
 }
-#block-deleter {
-    height: 10pt;
-    width: 10pt;
-    background: #c92a39;
-    border-radius: 2pt;
-    position: relative;
+.regex-block .block-deleter {
+    --angle: 45deg;
+    height: 6pt;
+    width: 6pt;
+    position: absolute;
     float: right;
-    top: 6pt;
-    right: 6pt;
+    top: 3pt;
+    right: 3pt;
+    opacity: 0;
+    background: linear-gradient(var(--angle), transparent, transparent);
+    -webkit-mask-box-image: url(https://cdn-icons-png.flaticon.com/32/3096/3096687.png);
+    transition: all 0.3s ease-in-out;
+}
+.regex-block.highlighted .block-deleter {
+    opacity: 1;
+    background: linear-gradient(var(--angle), #854f4f, #d17272);
+}
+.regex-block.highlighted .block-deleter:hover {
+    --angle: -135deg;
+    background: linear-gradient(var(--angle), #854f4f, #d17272);
+}
+.regex-block.highlighted .block-deleter[confirm] {
+    --angle: -135deg;
+    background: linear-gradient(var(--angle), #912e2e, #d42626);
+}
+
+.regex-block:has(.block-deleter[confirm]) {
+    background: #f334;
 }
 
 div.block-spacer-selector {
@@ -120,13 +141,13 @@ div.regex-block {
     padding: 2px;
     display: inline-block;
     position: relative;
-    background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 20%);
+    /* background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 20%); */
     text-align: center;
     overflow: hidden;
     user-select: none;
     opacity: var(--user-regex-block-opacity);
     transition: all 0.3s ease;
-    backdrop-filter: blur(4px);
+    backdrop-filter: blur(6px);
     box-shadow: inset 0px 0px 0px 0.5pt rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 100%);
 }
 div.regex-block.highlighted {

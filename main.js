@@ -47,12 +47,12 @@ const RegexBuilder = (function() {
         "\\": 'hotpink',
         "=": '#c17844',
         "\"": '#4d6',
-        "[": '#aa4',
-        "^": '#aa4',
+        "[": '#c5c54d',
+        "^": '#c5c54d',
         "+": '#577af3',
         "*": '#577af3',
         "?": '#577af3',
-        "]": '#aa4',
+        "]": '#c5c54d',
     };
 
     function ExportBlocksToJson() {
@@ -155,18 +155,40 @@ const RegexBuilder = (function() {
                 ShowRegexResults();
             }
         });
+
+        
+        let regexBlockdeleter = document.createElement('div');
+        regexBlockdeleter.className = 'block-deleter';
+        regexBlockdeleter.addEventListener('click', (e) => {
+            var eleDel = e.target;
+            if (eleDel.className != 'block-deleter') return;
+            var ele = eleDel.className != 'regex-block' ? eleDel.parentElement : eleDel;
+            if (eleDel.getAttribute('confirm')) {
+                ele.nextSibling.remove();
+                ele.remove();
+                document.documentElement.style.setProperty('--user-regex-block-opacity', '1');
+                ShowRegexResults();
+            } else {
+                eleDel.setAttribute('confirm', true);
+            }
+        });
     
         regexBlock.onmouseenter = ((e) => {
-            var ele = e.target.className != 'regex-block' ? e.target.parentElement : e.target;
+            var ele = !e.target.className.includes('regex-block') ? e.target.parentElement : e.target;
+            console.log(ele);
+            ele.classList.add('highlighted');
             var i = (([... ele.parentNode.childNodes].indexOf(ele)) - 1) / 2;
             console.log(i);
             document.getElementById(`block-${i}`).classList.add('highlighted');
         });
         regexBlock.onmouseleave = ((e) => {
-            var ele = e.target.className != 'regex-block' ? e.target.parentElement : e.target;
+            var ele = !e.target.className.includes('regex-block') ? e.target.parentElement : e.target;
+            console.log(ele);
+            ele.classList.remove('highlighted');
             var i = (([... ele.parentNode.childNodes].indexOf(ele)) - 1) / 2;
             console.log(i);
             document.getElementById(`block-${i}`).classList.remove('highlighted');
+            ele.querySelector('.block-deleter').removeAttribute('confirm');
         });
     
         regexBlock.addEventListener('drop', (e) => {
@@ -202,6 +224,7 @@ const RegexBuilder = (function() {
     
         regexBlock.appendChild(regexBlockContent);
         regexBlock.appendChild(regexBlockDesc);
+        regexBlock.appendChild(regexBlockdeleter);
         //editor.appendChild(regexBlock);
     
         var spacerEle = CreateSpacerPlaceholder();
