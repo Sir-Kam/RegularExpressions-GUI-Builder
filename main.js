@@ -5,10 +5,14 @@
 */
 
 const RegexBuilder = (function() {
-    const regexBlockData = [
+    let regexBlockData = [
+        {
+          "type": "words",
+          "content": " "
+        },
         {
           "type": "chars",
-          "content": "class=\""
+          "content": "=\""
         },
         {
           "type": "char-range-inverse",
@@ -16,7 +20,19 @@ const RegexBuilder = (function() {
         },
         {
           "type": "chars",
-          "content": "\" type=\""
+          "content": "\""
+        },
+        {
+          "type": "any",
+          "content": " "
+        },
+        {
+          "type": "words",
+          "content": " "
+        },
+        {
+          "type": "chars",
+          "content": "=\""
         },
         {
           "type": "char-range-inverse",
@@ -26,34 +42,98 @@ const RegexBuilder = (function() {
           "type": "chars",
           "content": "\""
         }
-    ];
+      ];
 
     const RegexBlocks = {
         "chars": {
-            desc: 'character sequence',
+            desc: 'characters',
+            hasValue: true,
             func: (val) => `${val}`
         },
         "char-range": {
-            desc: 'match any',
-            func: (val) => `[${val}]+`,
+            desc: 'character set',
+            hasValue: true,
+            func: (val) => `[${val}]{0,}`,
         },
         "char-range-inverse": {
-            desc: 'match none',
-            func: (val) => `[^${val}]+`,
+            desc: 'negated set',
+            hasValue: true,
+            func: (val) => `[^${val}]{0,}`,
+        },
+        "word": {
+            desc: 'word',
+            hasValue: false,
+            func: (val) => `\\w`,
+        },
+        "not-word": {
+            desc: 'not word',
+            hasValue: false,
+            func: (val) => `\\W`,
+        },
+        "words": {
+            desc: 'words',
+            hasValue: false,
+            func: (val) => `\\w+`,
+        },
+        "not-words": {
+            desc: 'not words',
+            hasValue: false,
+            func: (val) => `\\W+`,
+        },
+        "digit": {
+            desc: 'digit',
+            hasValue: false,
+            func: (val) => `\\d`,
+        },
+        "not-digit": {
+            desc: 'not digit',
+            hasValue: false,
+            func: (val) => `\\D`,
+        },
+        "digits": {
+            desc: 'digits',
+            hasValue: false,
+            func: (val) => `\\d+`,
+        },
+        "not-digits": {
+            desc: 'not digits',
+            hasValue: false,
+            func: (val) => `\\D+`,
+        },
+        "any": {
+            desc: 'match any',
+            hasValue: false,
+            func: (val) => `.`,
         },
     };
+    const RegexBlockColors = {
+        "chars": ['83, 131, 202, 85'],
+        "char-range": ['223, 219, 35, 85'],
+        "char-range-inverse": ['184, 182, 58, 34'],
+        "word": ['#d705'],
+        "not-word": ['#d702'],
+        "words": ['#d705'],
+        "not-words": ['#d702'],
+        "digit": ['#d705'],
+        "not-digit": ['#d702'],
+        "digits": ['#d705'],
+        "not-digits": ['#d702'],
+        "any": ['#92e5']
+    };
+
     const RegexColorMapping = {
         "/": 'gray',
         "\\": 'hotpink',
-        "=": '#c17844',
-        "\"": '#4d6',
-        "[": '#c5c54d',
-        "^": '#c5c54d',
-        "+": '#577af3',
-        "*": '#577af3',
-        "?": '#577af3',
-        "]": '#c5c54d',
+        "[": '#d70',
+        "^": '#d70',
+        "+": '#58f',
+        "*": '#58f',
+        "?": '#58f',
+        "]": '#d70',
     };
+    const RegexColorMapping_Wildcard = {
+        "\\{\\d,(?:\\d|)\\}": '#58f'
+    }
 
     function ExportBlocksToJson() {
         regexBlockData = [];
@@ -72,7 +152,7 @@ const RegexBuilder = (function() {
     function ExportBlocksToRegex() {
         return (
             [...document.querySelectorAll("#editor-area .regex-block")].map(ele => {
-                return RegexBlocks[ele.getAttribute('type')].func(ele.children[0].innerHTML);
+                return RegexBlocks[ele.getAttribute('type')].func(ele.querySelector('.block-content').innerText.replace('\\\\', '\\'));
             })
         );
     }
@@ -92,7 +172,7 @@ const RegexBuilder = (function() {
                     color = 'hotpink';
                     char = '\\s';
                 }
-                //console.log(i + ' ' + char + ' ' + color);
+                console.log(i + ' ' + char + ' ' + color);
                 if (color != lastColor) {
                     regexColor += `<span${(lastColor ? ` style="color: ${lastColor}"` : '')}>${strCache}</span>`;
                     strCache = char;
@@ -101,7 +181,19 @@ const RegexBuilder = (function() {
                     strCache += char;
                 }
             }
-            regexColor += `<span${(lastColor ? ` style="color: ${lastColor}"` : '')}>${strCache}</span>`;
+            if (strCache != '') {
+                for (var [matchStr, colorStr] of Object.entries(RegexColorMapping_Wildcard)) {
+                    var match = new RegExp(matchStr).test(strCache);
+                    if (match) {
+                        regexColor += `<span style="color: ${colorStr}">${strCache}</span>`;
+                        strCache = '';
+                        break;
+                    }
+                }
+            }
+            if (strCache != '') {
+                regexColor += `<span${(lastColor ? ` style="color: ${lastColor}"` : '')}>${strCache}</span>`;
+            }
             finalColored += `<div id="block-${i}" class="colored-regex-block-group">${regexColor}</div>`;
         }
         finalColored += `<span style="color: gray">/${flags}</span>`;
@@ -132,6 +224,45 @@ const RegexBuilder = (function() {
         });
     }
 
+    function TestInputAgainstRegex() {
+        var inputEle = document.querySelector('#testing-input');
+        var regexPasses = new RegExp(ExportBlocksToRegex().join("")).test(inputEle.value);
+        inputEle.style['border-color'] = (regexPasses ? '#00ff43' : 'inherit');
+
+
+        document.querySelectorAll('.colored-regex-block-group.underline').forEach(ele =>
+            ele.classList.remove('underline', 'good', 'bad')
+        );
+
+        if (!regexPasses) {
+            var testStr = inputEle.value;
+            var tempStr = testStr;
+            var regParts = RegexBuilder.Export.BlocksToRegex();
+            var partIndex = 0;
+            var passed = true;
+            for (const part of regParts) {
+                //console.log(part);
+                var regex = new RegExp(part);
+                //console.log(regex);
+                var res = regex.exec(tempStr);
+                if (res != null && res.length == 1) {
+                    document.getElementById(`block-${partIndex}`).classList.add('underline', 'good');
+                    tempStr = tempStr.substring(res[0].length);
+                } else {
+                    passed = false;
+                    break;
+                }
+                partIndex++;
+            }
+            if (!passed) {
+                document.getElementById(`block-${partIndex}`).classList.add('underline', 'bad');
+                //var passedParts = regParts.slice(0,partIndex).join("");
+                //console.log(passedParts + regParts[partIndex]);
+                //console.log(' '.repeat(passedParts.length) + '^'.repeat(regParts[partIndex].length));
+            }
+        }
+    }
+
     let CurrentDragDropName = '';
 
     function CreateUserRegexBlock(type, content) {
@@ -149,6 +280,7 @@ const RegexBuilder = (function() {
         regexBlockContent.innerText = content;
     
         regexBlockContent.addEventListener('dblclick', (e) => {
+            if (!RegexBlocks[type].hasValue) return;
             newContentValue = prompt('Regex block contents:', e.target.innerHTML);
             if (newContentValue) {
                 e.target.innerText = newContentValue;
@@ -175,18 +307,18 @@ const RegexBuilder = (function() {
     
         regexBlock.onmouseenter = ((e) => {
             var ele = !e.target.className.includes('regex-block') ? e.target.parentElement : e.target;
-            console.log(ele);
+            //console.log(ele);
             ele.classList.add('highlighted');
             var i = (([... ele.parentNode.childNodes].indexOf(ele)) - 1) / 2;
-            console.log(i);
+            //console.log(i);
             document.getElementById(`block-${i}`).classList.add('highlighted');
         });
         regexBlock.onmouseleave = ((e) => {
             var ele = !e.target.className.includes('regex-block') ? e.target.parentElement : e.target;
-            console.log(ele);
+            //console.log(ele);
             ele.classList.remove('highlighted');
             var i = (([... ele.parentNode.childNodes].indexOf(ele)) - 1) / 2;
-            console.log(i);
+            //console.log(i);
             document.getElementById(`block-${i}`).classList.remove('highlighted');
             ele.querySelector('.block-deleter').removeAttribute('confirm');
         });
@@ -222,8 +354,8 @@ const RegexBuilder = (function() {
             document.documentElement.style.setProperty('--user-regex-block-opacity', '1');
         });
     
-        regexBlock.appendChild(regexBlockContent);
         regexBlock.appendChild(regexBlockDesc);
+        regexBlock.appendChild(regexBlockContent);
         regexBlock.appendChild(regexBlockdeleter);
         //editor.appendChild(regexBlock);
     
@@ -367,11 +499,76 @@ const RegexBuilder = (function() {
         const output = document.createElement('div');
         output.id = 'output-area';
 
+        const tester = document.createElement('div');
+        tester.id = 'testing-area';
+        const test_input = document.createElement('input');
+        test_input.id = 'testing-input';
+        test_input.spellcheck = false;
+        test_input.addEventListener('input', TestInputAgainstRegex);
+        tester.appendChild(test_input)
+
         builder.appendChild(toolbar);
         builder.appendChild(editor);
         builder.appendChild(output);
+        builder.appendChild(tester);
 
         return builder;
+    }
+
+    function HexToRGBA(h) {
+        let r = 0, g = 0, b = 0, a = 255;
+      
+        // 3 digits
+        if (h.length == 4) {
+          r = "0x" + h[1] + h[1];
+          g = "0x" + h[2] + h[2];
+          b = "0x" + h[3] + h[3];
+      
+        // 6 digits
+        } else if (h.length == 7) {
+          r = "0x" + h[1] + h[2];
+          g = "0x" + h[3] + h[4];
+          b = "0x" + h[5] + h[6];
+        }
+
+        if (h.length == 5) {
+          r = "0x" + h[1] + h[1];
+          g = "0x" + h[2] + h[2];
+          b = "0x" + h[3] + h[3];
+          a = "0x" + h[4] + h[4];
+      
+        } else if (h.length == 9) {
+          r = "0x" + h[1] + h[2];
+          g = "0x" + h[3] + h[4];
+          b = "0x" + h[5] + h[6];
+          a = "0x" + h[7] + h[8];
+        }
+        
+        return "" + +r + "," + +g + "," + +b + "," + +a + "";
+    }
+
+    function InsertRegexStyleEle() {
+        const sheet = window.document.styleSheets[0];
+        for (const [key, colorsData] of Object.entries(RegexBlockColors)) {
+            const [bg, bc] = colorsData;
+            const [rgbaBg, rgbaB] = [(bg.includes('#') ? HexToRGBA(bg) : bg), /*(bc.includes('#') ? HexToRGBA(bc) : bc)*/ null];
+            console.log(rgbaBg);
+            let [r, g, b, a] = rgbaBg.split(',').map(i => i.trim());
+            if (a == undefined)
+                a = 255;
+            sheet.insertRule(
+                `
+                div [type="${key}"] {
+                    --block-bg-accent-color: rgba(${rgbaBg});
+                    --block-bg-accent-color-r: ${r};
+                    --block-bg-accent-color-g: ${g};
+                    --block-bg-accent-color-b: ${b};
+                    --block-bg-accent-color-a: ${a};
+                }
+                `,
+                sheet.cssRules.length
+            );
+        }
     }
 
     function InitBuilder() {
@@ -380,6 +577,9 @@ const RegexBuilder = (function() {
         scriptele.insertAdjacentElement('beforeBegin', builder);
         
         scriptele.remove();
+
+        InsertRegexStyleEle();
+
         if (HasSavedBlockData())
             ShowRegexResults();
     }
@@ -400,6 +600,7 @@ const RegexBuilder = (function() {
             BlocksToJson: ExportBlocksToJson
         },
         RegexBlockDefinitions: RegexBlocks,
-        RegexColorMapping: RegexColorMapping
+        RegexColorMapping: RegexColorMapping,
+        RegexColorMapping_Wildcard: RegexColorMapping_Wildcard
     }
 }());
