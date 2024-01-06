@@ -71,18 +71,45 @@ body {
     width: calc(100% - 20pt);
     display: block;
 }
+#testing-area {
+    height: 20pt;
+    padding: 5pt;
+}
+#testing-input {
+    background: transparent;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    border: 1px solid grey;
+    outline: none;
+    color: #eee;
+    padding: 0px 4pt;
+    border-radius: 2pt;
+    font-family: monospace;
+    font-size: 12pt;
+    line-height: 26pt;
+    letter-spacing: 1px;
+}
 .colored-regex-block-group {
     display: inline-block;
     border-radius: 2pt;
     height: 26pt;
-    transition: all 0.3s ease-in-out;
-    padding: 0px 2px;
-    margin: 0px 2px;
+    transition: all 0.15s ease-in-out;
+    padding: 0px 0px;
+    margin: 0px 0px;
+    --udlColor: transparent;
+    background: linear-gradient(0deg, transparent 2pt, var(--udlColor) 2pt, var(--udlColor) 3pt, transparent 3pt);
+    background-repeat: no-repeat;
 }
 .colored-regex-block-group.highlighted {
-    background: rgb(255 255 255 / 10%);
+    /* background: rgb(255 255 255 / 10%); */
     box-shadow: 0px 0px 0px 1px #d7d1aa40 inset;
     backdrop-filter: blur(4px);
+}
+.colored-regex-block-group.underline.good {
+    --udlColor: #13c756;
+}
+.colored-regex-block-group.underline.bad {
+    --udlColor: #db0a2d;
 }
 .regex-block .block-deleter {
     --angle: 45deg;
@@ -95,19 +122,25 @@ body {
     opacity: 0;
     background: linear-gradient(var(--angle), transparent, transparent);
     -webkit-mask-box-image: url(https://cdn-icons-png.flaticon.com/32/3096/3096687.png);
-    transition: all 0.3s ease-in-out;
+    transition: all 0.15s ease-in-out;
 }
 .regex-block.highlighted .block-deleter {
     opacity: 1;
-    background: linear-gradient(var(--angle), #854f4f, #d17272);
+    --lgc1: #eee6;
+    --lgc2: #eee6;
+    background: linear-gradient(var(--angle), var(--lgc1), var(--lgc2));
 }
 .regex-block.highlighted .block-deleter:hover {
     --angle: -135deg;
-    background: linear-gradient(var(--angle), #854f4f, #d17272);
+    --lgc1: #eeec;
+    --lgc2: #eeec;
+    /* background: linear-gradient(var(--angle), #eeec, #eeec); */
 }
 .regex-block.highlighted .block-deleter[confirm] {
-    --angle: -135deg;
-    background: linear-gradient(var(--angle), #912e2e, #d42626);
+    --angle: 45deg;
+    --lgc1: #eee;
+    --lgc2: #fcfcfc;
+    /* background: linear-gradient(var(--angle), #912e2e, #d42626); */
 }
 
 .regex-block:has(.block-deleter[confirm]) {
@@ -141,12 +174,12 @@ div.regex-block {
     padding: 2px;
     display: inline-block;
     position: relative;
-    /* background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 20%); */
+    background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / calc(var(--block-bg-accent-color-a) / 255));
     text-align: center;
     overflow: hidden;
     user-select: none;
     opacity: var(--user-regex-block-opacity);
-    transition: all 0.3s ease;
+    transition: all 0.15s ease;
     backdrop-filter: blur(6px);
     box-shadow: inset 0px 0px 0px 0.5pt rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 100%);
 }
@@ -194,6 +227,7 @@ div.block-content {
     text-shadow: 0px 0px 3px #141414;
     /* border-radius: 3pt 3pt 0pt 0pt; */
     border-radius: 2px;
+    padding: 0px 3pt;
 }
 div.block-desc {
     --desc-font-size: 6pt;
@@ -203,8 +237,8 @@ div.block-desc {
     width: -webkit-fill-available;
     flex-wrap: nowrap;
     overflow: visible;
-    /* white-space: nowrap; */
-    height: 50%;
+    /* white-space: nowrap;
+    height: 50%; */
     bottom: 0pt;
     left: 0;
     display: inline-block;
@@ -213,11 +247,12 @@ div.block-desc {
     margin-top: 1pt;
 }
 
+/*
 div [type="char-range"] {
-    --block-bg-accent-color: rgb(203 119 48);
-    --block-bg-accent-color-r: 203;
-    --block-bg-accent-color-g: 119;
-    --block-bg-accent-color-b: 48;
+    --block-bg-accent-color: rgb(223, 219, 35);
+    --block-bg-accent-color-r: 223;
+    --block-bg-accent-color-g: 219;
+    --block-bg-accent-color-b: 35;
 }
 div [type="chars"] {
     --block-bg-accent-color: rgb(83, 131, 202);
@@ -226,8 +261,9 @@ div [type="chars"] {
     --block-bg-accent-color-b: 202;
 }
 div [type="char-range-inverse"] {
-    --block-bg-accent-color: rgb(151, 93, 46);
-    --block-bg-accent-color-r: 151;
-    --block-bg-accent-color-g: 93;
-    --block-bg-accent-color-b: 46;
+    --block-bg-accent-color: rgb(184, 182, 58);
+    --block-bg-accent-color-r: 184;
+    --block-bg-accent-color-g: 182;
+    --block-bg-accent-color-b: 58;
 }
+*/
