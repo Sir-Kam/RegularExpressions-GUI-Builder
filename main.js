@@ -4,6 +4,8 @@
 
 */
 
+const RegexBuilders = [];
+
 const RegexBuilder = (function() {
     let regexBlockData = [
         {
@@ -246,7 +248,9 @@ const RegexBuilder = (function() {
                 //console.log(regex);
                 var res = regex.exec(tempStr);
                 if (res != null && res.length == 1) {
-                    document.getElementById(`block-${partIndex}`).classList.add('underline', 'good');
+                    var ele = document.querySelector(`#${BuilderId} #block-${partIndex}`);
+                    ele.classList.remove('underline', 'bad');
+                    ele.classList.add('underline', 'good');
                     tempStr = tempStr.substring(res[0].length);
                 } else {
                     passed = false;
@@ -255,7 +259,9 @@ const RegexBuilder = (function() {
                 partIndex++;
             }
             if (!passed) {
-                document.getElementById(`block-${partIndex}`).classList.add('underline', 'bad');
+                var ele = document.querySelector(`#${BuilderId} #block-${partIndex}`);
+                ele.classList.remove('underline', 'good');
+                ele.classList.add('underline', 'bad');
                 //var passedParts = regParts.slice(0,partIndex).join("");
                 //console.log(passedParts + regParts[partIndex]);
                 //console.log(' '.repeat(passedParts.length) + '^'.repeat(regParts[partIndex].length));
@@ -518,6 +524,8 @@ const RegexBuilder = (function() {
         builder.appendChild(editor);
         builder.appendChild(output);
         builder.appendChild(tester);
+
+        RegexBuilders.push(builder);
 
         return builder;
     }

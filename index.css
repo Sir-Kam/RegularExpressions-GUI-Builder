@@ -105,8 +105,7 @@ body {
 }
 .colored-regex-block-group.highlighted {
     /* background: rgb(255 255 255 / 10%); */
-    box-shadow: 0px 0px 0px 1px #d7d1aa40 inset;
-    backdrop-filter: blur(4px);
+    box-shadow: 0px 0px 0px 50pt #d5d5d540 inset;
 }
 .colored-regex-block-group.underline.good {
     --udlColor: #13c756;
@@ -177,13 +176,12 @@ div.regex-block {
     padding: 2px;
     display: inline-block;
     position: relative;
-    background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / calc(var(--block-bg-accent-color-a) / 255));
+    /* background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / calc(var(--block-bg-accent-color-a) / 255)); */
     text-align: center;
     overflow: hidden;
     user-select: none;
     opacity: var(--user-regex-block-opacity);
     transition: all 0.15s ease;
-    backdrop-filter: blur(6px);
     box-shadow: inset 0px 0px 0px 0.5pt rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 100%);
 }
 div.regex-block.highlighted {
