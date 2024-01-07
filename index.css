@@ -18,12 +18,13 @@ body {
     overflow: hidden;
 }
 
-#regex-builder {
+.regex-builder {
     left: 10px;
     top: 10px;
     position: absolute;
     background: #111;
-    width: calc(100% - 20px);
+    width: 450pt;
+    min-width: 200pt;
     height: auto;
     border-radius: 4px;
     border: 1px solid #777a;
@@ -32,9 +33,11 @@ body {
     background-size: 20px 35px;
     background-position: 0px 0px, 0px 0px, 10px 18px, 10px 18px, 0px 0px, 10px 18px;
     */
+    display: block;
+    position: relative;
 }
 
-#toolbar-area {
+.toolbar-area {
     height: auto;
     background: linear-gradient(180deg, #66666669 calc(100% - 2pt), #777a calc(100% - 2pt));
     border-radius: 2px 2px 0px 0px;
@@ -43,7 +46,7 @@ body {
     /* position: absolute; */
     width: calc(100% - 10pt);
 }
-#editor-area {
+.editor-area {
     --editor-margin: 10px;
     padding: calc(var(--editor-margin));
     /* border-radius: 0px 0px 8px 8px; */
@@ -54,7 +57,7 @@ body {
     /* position: absolute; */
     /* width: calc(100% - var(--editor-margin));*/
 }
-#output-area {
+.output-area {
     height: calc(100% - 20pt);
     background: #66666669;
     border-radius: 0px 0px 2px 2px;
@@ -71,11 +74,11 @@ body {
     width: calc(100% - 20pt);
     display: block;
 }
-#testing-area {
+.testing-area {
     height: 20pt;
     padding: 5pt;
 }
-#testing-input {
+.testing-input {
     background: transparent;
     height: -webkit-fill-available;
     width: -webkit-fill-available;

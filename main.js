@@ -137,7 +137,7 @@ const RegexBuilder = (function() {
 
     function ExportBlocksToJson() {
         regexBlockData = [];
-        [... document.querySelectorAll("#editor-area .regex-block")].forEach(ele => {
+        [... document.querySelectorAll(`#${BuilderId} .editor-area .regex-block`)].forEach(ele => {
             console.log(ele.getElementsByClassName('block-content'));
             regexBlockData.push(
                 {
@@ -151,7 +151,7 @@ const RegexBuilder = (function() {
 
     function ExportBlocksToRegex() {
         return (
-            [...document.querySelectorAll("#editor-area .regex-block")].map(ele => {
+            [...document.querySelectorAll(`#${BuilderId} .editor-area .regex-block`)].map(ele => {
                 return RegexBlocks[ele.getAttribute('type')].func(ele.querySelector('.block-content').innerText.replace('\\\\', '\\'));
             })
         );
@@ -204,33 +204,33 @@ const RegexBuilder = (function() {
     function ShowRegexResults() {
         var docFrag = new DocumentFragment();
         docFrag.innerHTML
-        document.querySelector("#output-area").innerHTML =
+        document.querySelector(`#${BuilderId} .output-area`).innerHTML =
             ColorRegex(ExportBlocksToRegex(), 'gi');
-        document.querySelectorAll("#output-area .colored-regex-block-group").forEach(regexBlock => {
+        document.querySelectorAll(`#${BuilderId} .output-area .colored-regex-block-group`).forEach(regexBlock => {
             regexBlock.onmouseenter = ((e) => {
                 var ele = !e.target.className.includes('colored-regex-block-group') ? e.target.parentElement : e.target;
                 ele.classList.add('highlighted');
                 var i = parseInt(ele.id.replace('block-', ''));
                 //console.log(i);
-                document.querySelectorAll('#editor-area .regex-block')[i].classList.add('highlighted');
+                document.querySelectorAll(`#${BuilderId} .editor-area .regex-block`)[i].classList.add('highlighted');
             });
             regexBlock.onmouseleave = ((e) => {
                 var ele = !e.target.className.includes('colored-regex-block-group') ? e.target.parentElement : e.target;
                 ele.classList.remove('highlighted');
                 var i = parseInt(ele.id.replace('block-', ''));
                 //console.log(i);
-                document.querySelectorAll('#editor-area .regex-block')[i].classList.remove('highlighted');
+                document.querySelectorAll(`#${BuilderId} .editor-area .regex-block`)[i].classList.remove('highlighted');
             });
         });
     }
 
     function TestInputAgainstRegex() {
-        var inputEle = document.querySelector('#testing-input');
+        var inputEle = document.querySelector(`#${BuilderId} .testing-input`);
         var regexPasses = new RegExp(ExportBlocksToRegex().join("")).test(inputEle.value);
         inputEle.style['border-color'] = (regexPasses ? '#00ff43' : 'inherit');
 
 
-        document.querySelectorAll('.colored-regex-block-group.underline').forEach(ele =>
+        document.querySelectorAll(`#${BuilderId} .colored-regex-block-group.underline`).forEach(ele =>
             ele.classList.remove('underline', 'good', 'bad')
         );
 
@@ -475,18 +475,25 @@ const RegexBuilder = (function() {
         return (regexBlockData && typeof regexBlockData === typeof [] && regexBlockData.length != 0);
     }
 
+    let BuilderId = "";
     function CreateBuilder() {
+        BuilderId = 'regex-builder_' + Date.now();
+        if (document.querySelector('#' + BuilderId)) {
+            BuilderId += Math.random().toString();
+        }
+
         const builder = document.createElement('div');
-        builder.id = 'regex-builder';
+        builder.className = 'regex-builder';
+        builder.id = BuilderId;
 
         const toolbar = document.createElement('div');
-        toolbar.id = 'toolbar-area';
+        toolbar.className = 'toolbar-area';
         const deleterDiv = CreateToolbarDeleterBlock();
         toolbar.appendChild(deleterDiv);
         CreateToolbarRegexBlocks(toolbar);
 
         const editor = document.createElement('div');
-        editor.id = 'editor-area';
+        editor.className = 'editor-area';
         editor.appendChild(CreateSpacerPlaceholder());
         if (HasSavedBlockData()) {
             for (let i = 0; i < regexBlockData.length; i++) {
@@ -497,12 +504,12 @@ const RegexBuilder = (function() {
         }
 
         const output = document.createElement('div');
-        output.id = 'output-area';
+        output.className = 'output-area';
 
         const tester = document.createElement('div');
-        tester.id = 'testing-area';
+        tester.className = 'testing-area';
         const test_input = document.createElement('input');
-        test_input.id = 'testing-input';
+        test_input.className = 'testing-input';
         test_input.spellcheck = false;
         test_input.addEventListener('input', TestInputAgainstRegex);
         tester.appendChild(test_input)
