@@ -12,53 +12,76 @@ body {
     /*padding: var(--body-padding) var(--body-padding);*/
     font-family: monospace;
     font-size: 10pt;
-    zoom: 1.9;
+    user-zoom: 1;
     height: 100%;
     width: 100%;
     overflow: hidden;
 }
 
+::-webkit-scrollbar {
+    width: 5px;               /* width of the entire scrollbar */
+}
+  
+::-webkit-scrollbar-track {
+    background: orange;        /* color of the tracking area */
+}
+  
+::-webkit-scrollbar-thumb {
+    background-color: blue;    /* color of the scroll thumb */
+    border-radius: 20px;       /* roundness of the scroll thumb */
+    border: 3px solid orange;  /* creates padding around scroll thumb */
+}
+
 .regex-builder {
-    left: 10px;
-    top: 10px;
-    position: absolute;
+    scrollbar-width: thin;          /* "auto" or "thin" */
+    scrollbar-color: blue orange;   /* scroll thumb and track */ 
+}
+  
+
+#builder-container {
+    width: 400px;
+    height: 500px;
+    position: relative;
+    display: block;
+}
+
+.regex-builder {
     background: #111;
-    width: 450pt;
-    min-width: 200pt;
-    height: auto;
+    width: auto;
+    height: -webkit-fill-available;
     border-radius: 4px;
     border: 1px solid #777a;
-    /*
-    background-image: linear-gradient(30deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(150deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(30deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(150deg, var(--bg-linear-grad-color) 12%, transparent 12.5%, transparent 87%, var(--bg-linear-grad-color) 87.5%, var(--bg-linear-grad-color)), linear-gradient(60deg, var(--bg-linear-grad-color-faded) 25%, transparent 25.5%, transparent 75%, var(--bg-linear-grad-color-faded) 75%, var(--bg-linear-grad-color-faded)), linear-gradient(60deg, var(--bg-linear-grad-color-faded) 25%, transparent 25.5%, transparent 75%, var(--bg-linear-grad-color-faded) 75%, var(--bg-linear-grad-color-faded));
-    background-size: 20px 35px;
-    background-position: 0px 0px, 0px 0px, 10px 18px, 10px 18px, 0px 0px, 10px 18px;
-    */
     display: block;
     position: relative;
 }
 
 .toolbar-area {
-    height: auto;
+    height: 42pt;
     background: linear-gradient(180deg, #66666669 calc(100% - 2pt), #777a calc(100% - 2pt));
     border-radius: 2px 2px 0px 0px;
     padding: 5pt;
-    display: block;
-    /* position: absolute; */
-    width: calc(100% - 10pt);
+    display: flex;
+    position: relative;
+    align-items: stretch;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    overflow: auto;
 }
 .editor-area {
-    --editor-margin: 10px;
+    --editor-margin: 5pt;
     padding: calc(var(--editor-margin));
     /* border-radius: 0px 0px 8px 8px; */
     background: linear-gradient(180deg, #0000 calc(100% - 2pt), #777a calc(100% - 2pt));
-    min-height: 180px;
-    display: block;
+    min-height: 50px;
+    height: calc(100% - 26pt - 10pt - 20pt - 10pt - 42pt - 10pt - (2 * var(--editor-margin)));
+    display: flex;
     top: 20%;
-    /* position: absolute; */
-    /* width: calc(100% - var(--editor-margin));*/
+    flex-wrap: wrap;
+    align-content: flex-start;
+    justify-content: flex-start;
 }
 .output-area {
-    height: calc(100% - 20pt);
+    height: calc(26pt + 0pt);
     background: #66666669;
     border-radius: 0px 0px 2px 2px;
     line-height: 26pt;
@@ -150,7 +173,7 @@ body {
 }
 
 div.block-spacer-selector {
-    display: inline-block;
+    display: inline-flex;
     position: relative;
     width: 10px;
     height: 44px;
@@ -168,13 +191,13 @@ div.regex-block {
     --block-bg-accent-color: #929292;
     --block-bg-color: #383838;
     --bg-top-split-height: 55%;
-    width: min-content;
-    min-width: 90px;
-    height: 40px;
+    width: 20%;
+    min-width: min-content;
+    height: auto;
     border-radius: 2px;
     margin: 2px;
     padding: 2px;
-    display: inline-block;
+    display: inline-flex;
     position: relative;
     /* background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / calc(var(--block-bg-accent-color-a) / 255)); */
     text-align: center;
@@ -183,6 +206,10 @@ div.regex-block {
     opacity: var(--user-regex-block-opacity);
     transition: all 0.15s ease;
     box-shadow: inset 0px 0px 0px 0.5pt rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 100%);
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+    justify-content: center;
 }
 div.regex-block.highlighted {
     /*
@@ -199,12 +226,15 @@ div.regex-block.highlighted {
 
 div.regex-block.toolbar-block {
     height: auto;
-    /*background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 20%);*/
+    /* background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 20%); */
     /* background-color: var(--block-bg-accent-color); */
     user-select: none;
     cursor: pointer;
+    padding: 3pt;
     opacity: 1;
     display: inline-flex;
+    min-width: 70px;
+    max-width: 100px;
 }
 .regex-block.toolbar-block:hover {
     background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 60%);
@@ -218,7 +248,7 @@ div.regex-block.toolbar-block .block-desc {
 }
 
 div.block-content {
-    display: block;
+    display: inline-flex;
     font-weight: 600;
     color: #ddd;
     font-size: 12pt;
@@ -229,6 +259,7 @@ div.block-content {
     /* border-radius: 3pt 3pt 0pt 0pt; */
     border-radius: 2px;
     padding: 0px 3pt;
+    justify-content: center;
 }
 div.block-desc {
     --desc-font-size: 6pt;
@@ -236,35 +267,12 @@ div.block-desc {
     line-height: var(--desc-font-size);
     text-align: center;
     width: -webkit-fill-available;
-    flex-wrap: nowrap;
     overflow: visible;
-    /* white-space: nowrap;
-    height: 50%; */
     bottom: 0pt;
     left: 0;
-    display: inline-block;
+    display: inline-flex;
     color: #fff9;
     font-weight: 900;
     margin-top: 1pt;
+    justify-content: center;
 }
-
-/*
-div [type="char-range"] {
-    --block-bg-accent-color: rgb(223, 219, 35);
-    --block-bg-accent-color-r: 223;
-    --block-bg-accent-color-g: 219;
-    --block-bg-accent-color-b: 35;
-}
-div [type="chars"] {
-    --block-bg-accent-color: rgb(83, 131, 202);
-    --block-bg-accent-color-r: 83;
-    --block-bg-accent-color-g: 131;
-    --block-bg-accent-color-b: 202;
-}
-div [type="char-range-inverse"] {
-    --block-bg-accent-color: rgb(184, 182, 58);
-    --block-bg-accent-color-r: 184;
-    --block-bg-accent-color-g: 182;
-    --block-bg-accent-color-b: 58;
-}
-*/

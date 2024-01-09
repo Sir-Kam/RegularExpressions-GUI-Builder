@@ -291,9 +291,11 @@ class RegexBuilder {
     
         regexBlockContent.addEventListener('dblclick', (e) => {
             if (!this.RegexBlocks[type].hasValue) return;
-            newContentValue = prompt('Regex block contents:', e.target.innerHTML);
+            var newContentValue = prompt('Regex block contents:', e.target.innerHTML.replace('&nbsp;', ' '));
+            
+            newContentValue = newContentValue.replace(' ', '&nbsp;');
             if (newContentValue) {
-                e.target.innerText = newContentValue;
+                e.target.innerHTML = newContentValue;
                 this.ShowRegexResults();
             }
         });
@@ -346,7 +348,7 @@ class RegexBuilder {
         });
         regexBlock.addEventListener('dragover',  (e) => {
             e.preventDefault();
-            if (CurrentDragDropName != 'delete')
+            if (this.CurrentDragDropName != 'delete')
                 return;
             var ele = e.target.className != 'regex-block' ? e.target.parentElement : e.target;
             //ele.style.filter = 'saturate(0.5) sepia(0.25)';
@@ -403,7 +405,7 @@ class RegexBuilder {
         });
         spacerEle.addEventListener('dragover', (e) => {
             e.preventDefault();
-            if (CurrentDragDropName == 'delete')
+            if (this.CurrentDragDropName == 'delete')
                 return;
             e.target.classList.remove('hidden');
         });
@@ -432,7 +434,7 @@ class RegexBuilder {
     
         regexBlock.addEventListener('dragstart', (e) => {
             e.dataTransfer.setData("Text", e.target.getAttribute('type'));
-            CurrentDragDropName = 'toolbar-regex-block'
+            this.CurrentDragDropName = 'toolbar-regex-block'
             document.documentElement.style.setProperty('--user-regex-block-opacity', '0.3');
             document.documentElement.style.setProperty('--spacer-block-opacity', '0.9');
         });
@@ -441,7 +443,7 @@ class RegexBuilder {
             e.preventDefault();
             document.documentElement.style.setProperty('--user-regex-block-opacity', '1');
             document.documentElement.style.setProperty('--spacer-block-opacity', '0.0');
-            CurrentDragDropName = '';
+            this.CurrentDragDropName = '';
         });
         
         regexBlock.setAttribute('draggable', true);
@@ -473,7 +475,7 @@ class RegexBuilder {
             deleter.addEventListener('dragend', (e) => {
                 e.preventDefault();
                 document.documentElement.style.setProperty('--user-regex-block-opacity', '1');
-                CurrentDragDropName = '';
+                this.CurrentDragDropName = '';
             });
         }
         deleter.setAttribute('draggable', true);
