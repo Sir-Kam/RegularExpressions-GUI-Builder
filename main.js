@@ -280,6 +280,7 @@ class RegexBuilder {
         let regexBlock = document.createElement('div');
         regexBlock.classList.add('regex-block');
         regexBlock.setAttribute('type', type);
+        regexBlock.setAttribute('no-value', !this.RegexBlocks[type].hasValue)
     
         let regexBlockDesc = document.createElement('div');
         regexBlockDesc.classList.add('block-desc');
@@ -584,7 +585,7 @@ class RegexBuilder {
                     --block-bg-accent-color-r: ${r};
                     --block-bg-accent-color-g: ${g};
                     --block-bg-accent-color-b: ${b};
-                    --block-bg-accent-color-a: ${a};
+                    --block-bg-accent-color-a: ${50};
                 }
                 `,
                 sheet.cssRules.length

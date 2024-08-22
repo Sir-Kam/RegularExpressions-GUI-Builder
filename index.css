@@ -18,24 +18,29 @@ body {
     overflow: hidden;
 }
 
-::-webkit-scrollbar {
-    width: 5px;               /* width of the entire scrollbar */
+
+.regex-builder::-webkit-scrollbar {
+    width: 15px;
+    height: 15px;
 }
-  
-::-webkit-scrollbar-track {
-    background: #9993;        /* color of the tracking area */
+
+.regex-builder::-webkit-scrollbar-track-piece  {
+    background-color: #C2D2E4;
 }
-  
-::-webkit-scrollbar-thumb {
-    background-color: #999;    /* color of the scroll thumb */
-    border-radius: 20px;       /* roundness of the scroll thumb */
-    border: 3px solid orange;  /* creates padding around scroll thumb */
+
+.regex-builder::-webkit-scrollbar-thumb:vertical {
+    background-color: #0A4C95;
 }
 
 .regex-builder {
-    scrollbar-width: thin;          /* "auto" or "thin" */
-    scrollbar-color: blue orange;   /* scroll thumb and track */ 
+    scrollbar-width: thin !important;          /* "auto" or "thin" */
+    scrollbar-color: #9993 9993 !important;   /* scroll thumb and track */ 
 }
+
+
+  
+
+
   
 
 #builder-container {
@@ -77,8 +82,9 @@ body {
     display: flex;
     top: 20%;
     flex-wrap: wrap;
-    align-content: flex-start;
-    justify-content: flex-start;
+    place-content: flex-start;
+    max-height: 150px;
+    overflow-y: scroll;
 }
 .output-area {
     height: calc(26pt + 0pt);
@@ -89,7 +95,8 @@ body {
     font-size: 12pt;
     letter-spacing: 1px;
     /* margin-top: 10pt; */
-    /* overflow-x: scroll; */
+    overflow-y: hidden;
+    overflow-x: scroll;
     flex-wrap: nowrap;
     white-space: nowrap;
     /* position: absolute; */
@@ -114,6 +121,8 @@ body {
     font-size: 12pt;
     line-height: 26pt;
     letter-spacing: 1px;
+    height: 100%;
+    width: calc(100% - 8pt);
 }
 .colored-regex-block-group {
     display: inline-block;
@@ -210,6 +219,7 @@ div.regex-block {
     align-content: center;
     align-items: center;
     justify-content: center;
+    flex-direction: column;
 }
 div.regex-block.highlighted {
     /*
@@ -222,6 +232,11 @@ div.regex-block.highlighted {
     */
     box-shadow: 0px 0px 0px 1px #e3e1d7bf inset;
     background: rgba(var(--block-bg-accent-color-r) var(--block-bg-accent-color-g) var(--block-bg-accent-color-b) / 60%);
+}
+
+div.regex-block[no-value="true"] .block-content {
+    pointer-events: none;
+    opacity: 0;
 }
 
 div.regex-block.toolbar-block {
@@ -258,8 +273,13 @@ div.block-content {
     text-shadow: 0px 0px 3px #141414;
     /* border-radius: 3pt 3pt 0pt 0pt; */
     border-radius: 2px;
-    padding: 0px 3pt;
-    justify-content: center;
+    padding: 0px 3pt 3pt;
+    justify-content: left;
+    background: #3337;
+    text-wrap: nowrap;
+    overflow: auto hidden;
+    max-width: 50pt;
+    text-align: left;
 }
 div.block-desc {
     --desc-font-size: 6pt;
